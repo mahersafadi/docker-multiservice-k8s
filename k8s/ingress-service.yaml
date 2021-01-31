@@ -6,7 +6,17 @@ metadata:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: 'true'
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # To let ingree work with certificate:
+    # certmanager.k8s.io/cluster-issuer: 'letencrypt-prod'
+    # Also we need to let the users user https trafic:
+    # nginx.ingress.kubernetes.io/ssl-redirec: 'true'
 spec:
+  # To let ingree work with certificate:
+  # - hosts:
+  #     # should be replaced with out domain name
+  #     - k8s-multi.com
+  #     - www.k8s-multi.com
+  #   secretNme: k8s-multi.com #<the name in cerificate.yaml file>
   rules:
     - http:
         paths:
@@ -18,3 +28,27 @@ spec:
             backend:
               serviceName: server-cluster-ip-service
               servicePort: 5000
+# To let the rules wotk with domain name:
+# rules:
+#    - host: k8s-mult.com # should be replaced with our domain name
+#      http:
+#        paths:
+#          - path: /?(.*)
+#            backend:
+#              serviceName: client-cluster-ip-service
+#              servicePort: 3000
+#          - path: /api/?(.*)
+#            backend:
+#              serviceName: server-cluster-ip-service
+#              servicePort: 5000
+#    - host: www.k8s-mult.com # should be replaced with our domain name
+#      http:
+#        paths:
+#          - path: /?(.*)
+#            backend:
+#              serviceName: client-cluster-ip-service
+#              servicePort: 3000
+#          - path: /api/?(.*)
+#            backend:
+#              serviceName: server-cluster-ip-service
+#              servicePort: 5000
