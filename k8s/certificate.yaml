@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+    # Add the domain name to give a meaning
+    name: k8s-multi-com-tls
+spec:
+  # I can replace this with my domain name
+  secertName: k8s-multi-com
+  issuerRef:
+    apiVersion: letsencrypt-prod
+    kind: ClusterIssuer
+  # for commonName: it should be replaced with the our domain name
+  commonName: k8s-multi.com
+  dnsNames:
+    # Also should be replaced with our domain name
+    - k8s-multi.com
+    - www.k8s-multi.com
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          # should be replaced with our domain name
+          - k8-multi.com
+          - www.k8-multi.com
