@@ -1,0 +1,45 @@
+#https://skaffold.dev/docs/references/
+#https://skaffold.dev/docs/references/yaml/
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  # list the builds we want skaffold to push
+  local
+    push: false # doint push to docker repo
+  artifiacts:
+    # usefull when your project can catch the new changes in files, otherwise it is useless to use mode 2   
+    - image: maher07/multi-client
+      context: client
+      # tell skaffold what to do exactly:
+      docker:
+        dockerfile: Dockerfile.dev
+      
+      # we tell Skaffold here which mmode to use
+      # mode1: on each change, rebuild the project from scratch
+      # mode2: only push the changed files 
+      # anything no mentioned in sunc part, will let Skaffold change to mode 1 and deploy everything
+      sync: 
+        '**.*.js': . # mode2: each time you see a changes js file, just throw it to the container
+        '**.*.css': . # mode2: each time you see a changes js file, just throw it to the container
+        '**.*.html': . # mode2: each time you see a changes js file, just throw it to the container
+    - image: maher07/multi-server
+      context: server
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        '**.*.js': .
+    - image: maher07/multi-worker
+      context: worker
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        '**.*.js': .
+deploy:
+  kubectl:
+    manifests:
+      - k8s/client-deployment.yaml # apply this deployment on each change
+      - k8s/server-deployment.yaml
+      - k8s/worker-deployment.yaml 
+      - k8s/server-cluser-ip-service.yaml
+      # note: adding persisted data ..... Skaffold will delete them each time it is down
+      # example postgree database is not recommanded to be added 

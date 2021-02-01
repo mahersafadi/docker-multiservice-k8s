@@ -41,7 +41,7 @@ spec:
 #            backend:
 #              serviceName: server-cluster-ip-service
 #              servicePort: 5000
-#    - host: www.k8s-mult.com # should be replaced with our domain name
+#     - host: www.k8s-mult.com # should be replaced with our domain name
 #      http:
 #        paths:
 #          - path: /?(.*)
